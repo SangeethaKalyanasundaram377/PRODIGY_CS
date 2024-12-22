@@ -1,0 +1,61 @@
+from PIL import Image
+def encrypt_image(input_path, output_path, key):
+    try:
+        image = Image.open(input_path)
+        pixels = image.load()
+    except FileNotFoundError:
+        print("Error: File not found. Please check the input path.")
+        return
+    except OSError:
+        print("Error: Unable to open the file. Ensure it is a valid image format.")
+        return
+    for x in range(image.width):
+        for y in range(image.height):
+            r, g, b = pixels[x, y]
+            pixels[x, y] = ((r + key) % 256, (g + key) % 256, (b + key) % 256)
+
+    try:
+        image.save(output_path)
+        print(f"Encrypted image saved to: {output_path}")
+    except OSError:
+        print("Error: Unable to save the image. Check the output path and permissions.")
+
+def decrypt_image(input_path, output_path, key):
+    try:
+        image = Image.open(input_path)
+        pixels = image.load()
+    except FileNotFoundError:
+        print("Error: File not found. Please check the input path.")
+        return
+    except OSError:
+        print("Error: Unable to open the file. Ensure it is a valid image format.")
+        return
+    for x in range(image.width):
+        for y in range(image.height):
+            r, g, b = pixels[x, y]
+            pixels[x, y] = ((r - key) % 256, (g - key) % 256, (b - key) % 256)
+
+    try:
+        image.save(output_path)
+        print(f"Decrypted image saved to: {output_path}")
+    except OSError:
+        print("Error: Unable to save the image. Check the output path and permissions.")
+def run_image_tool():
+    print("=== Simple Image Encryption Tool ===")
+    choice = input("Do you want to encrypt or decrypt an image? (encrypt/decrypt): ").lower()
+
+    if choice == "encrypt":
+        input_path = input("Enter the full path to the input image: ")
+        output_path = input("Enter the full path to save the encrypted image: ")
+        key = int(input("Enter the encryption key (integer): "))
+        encrypt_image(input_path, output_path, key)
+
+    elif choice == "decrypt":
+        input_path = input("Enter the full path to the encrypted image: ")
+        output_path = input("Enter the full path to save the decrypted image: ")
+        key = int(input("Enter the decryption key (integer): "))
+        decrypt_image(input_path, output_path, key)
+
+    else:
+        print("Invalid choice! Please type 'encrypt' or 'decrypt'.")
+run_image_tool()
