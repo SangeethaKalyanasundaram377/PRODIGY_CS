@@ -1,0 +1,24 @@
+def caesar_cipher(text, shift, mode):
+    result = ""
+    if mode == "decrypt":
+        shift = -shift
+    for char in text:
+        if char.isalpha():  
+            ascii_offset = 65 if char.isupper() else 97  
+            new_char = chr((ord(char) - ascii_offset + shift) % 26 + ascii_offset)
+            result += new_char
+        else:
+            result += char 
+    return result
+print("=== Caesar Cipher ===")
+# Encryption
+message_encrypt = input("Enter a message to encrypt: ")
+shift_value_encrypt = int(input("Enter shift value for encryption (integer): "))
+encrypted_message = caesar_cipher(message_encrypt, shift_value_encrypt, "encrypt")
+print(f"\nEncrypted Message: {encrypted_message}")
+
+# Decryption
+message_decrypt = input("\nEnter a message to decrypt: ")
+shift_value_decrypt = int(input("Enter shift value for decryption (integer): "))
+decrypted_message = caesar_cipher(message_decrypt, shift_value_decrypt, "decrypt")
+print(f"\nDecrypted Message: {decrypted_message}")
