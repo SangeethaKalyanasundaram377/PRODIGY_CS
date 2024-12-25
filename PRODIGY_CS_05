@@ -1,0 +1,27 @@
+from scapy.all import IP, sniff, Raw
+import textwrap
+# Function to handle each packet
+def packet_callback(packet):
+    # Check if the packet has an IP layer
+    if packet.haslayer(IP):
+        # Extract source and destination IP addresses
+        src_ip = packet[IP].src
+        dest_ip = packet[IP].dst
+        proto = packet[IP].proto
+        print(f"IPv4 Packet: Source IP: {src_ip}, Destination IP: {dest_ip}, Protocol: {proto}")
+        # If the packet has a Raw layer (payload), display it
+        if packet.haslayer(Raw):
+            print(f"  Payload Data:\n{textwrap.indent(format_payload(packet[Raw].load), '    ')}\n")
+# Format payload data into readable hex format
+def format_payload(data, width=16):
+    data = ''.join(r'\x{:02x}'.format(byte) for byte in data)
+    return textwrap.fill(data, width=width)
+
+# Start sniffing packets
+def start_sniffer():
+    print("Packet sniffer started... Press Ctrl+C to stop.\n")
+    sniff(prn=packet_callback, store=0) 
+
+# Run the sniffer
+if __name__ == "__main__":
+    start_sniffer()
